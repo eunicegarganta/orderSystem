@@ -14,7 +14,7 @@ namespace orderFullfilment
         static int newOrder = 1;
         static void Main(string[] args)
         {
-            Console.WriteLine("CONSOLE FULFILLMENT SYSTEM");
+            Console.WriteLine("GROCERY FULFILLMENT SYSTEM");
             bool ordersys = true;
             while (ordersys)
             {
