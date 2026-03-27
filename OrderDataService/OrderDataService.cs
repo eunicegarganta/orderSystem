@@ -8,11 +8,11 @@ using OrderData;
 
 namespace OrderDataService
 {
-    public class OrderDataService
+    public class OrderService
     {
         public List<Order> dummyOrders = new List<Order> ();
 
-        public OrderDataService () {
+        public OrderService () {
             Order order1 = new Order
             {
                 OrderId = 1,

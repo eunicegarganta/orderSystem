@@ -1,17 +1,13 @@
-﻿using System.Xml.Serialization;
+﻿//using System.Threading.Channels;
+//using System.Xml.Serialization;
+using OrderManager; //add
+using System;
 
-namespace orderFullfilment
+namespace OrderManager
 {
     internal class Program
     {
-
-        static List<int> orderId = new List<int>();
-        static List<string> cusNm = new List<string>();
-        static List<string> prodNm = new List<string>();
-        static List<int> qnty = new List<int>();
-        static List<string> ordrStt = new List<string>();
-
-        static int newOrder = 1;
+        public static OrderManagerService manager = new OrderManagerService();
         static void Main(string[] args)
         {
             Console.WriteLine("GROCERY FULFILLMENT SYSTEM");
@@ -75,128 +71,111 @@ namespace orderFullfilment
             string customerName = Console.ReadLine();
             Console.Write("Enter Product Name: ");
             string productName = Console.ReadLine();
-            Console.Write("Enter Quantity: ");
-            int quantity = int.Parse(Console.ReadLine());
 
-            if (quantity <= 0)
+            Console.Write("Enter Quantity: ");
+            if (!int.TryParse(Console.ReadLine(), out int quantity) || quantity <= 0) //add
             {
-                Console.WriteLine("Quantity must be greater than 0.");
-                return;
+                Console.WriteLine("Invalid Quantity."); //add
+                return;//add
             }
 
-            orderId.Add(newOrder);
-            cusNm.Add(customerName);
-            prodNm.Add(productName);
-            qnty.Add(quantity);
-            ordrStt.Add("Pending");
-
-            Console.WriteLine($"Order {newOrder} created successfully.");
-            newOrder++;
-
+            manager.CreateOrder(customerName, productName, quantity);
+            Console.WriteLine("Order created.");
         }
 
         static void ViewOrders()
         {
-            Console.WriteLine("\n--- ORDER LIST ---");
-
-            if (orderId.Count == 0)
+            var orders = manager.GetOrders();
+            if (orders.Count == 0)
             {
                 Console.WriteLine("No orders found.");
                 return;
             }
-
-            for (int i = 0; i < orderId.Count; i++)
+            foreach (var o in orders)
             {
-                Console.WriteLine(
-                    $"Order ID: {orderId[i]} | Customer: {cusNm[i]} | Item: {prodNm[i]} | Qty: {qnty[i]} | Status: {ordrStt[i]}");
+                Console.WriteLine($"Order ID: {o.OrderId} | Customer: {o.CustomerName} | Item: {o.ProductName} | Qty: {o.Quantity} | Status: {o.Status}");
             }
         }
 
         static void UpdateOrder()
         {
             Console.Write("\nEnter Order ID to update: ");
-            int id = int.Parse(Console.ReadLine());
-
-            for (int i = 0; i < orderId.Count; i++)
+            if (!int.TryParse(Console.ReadLine(), out int orderId))
             {
-                if (orderId[i] == id)
-                {
-                    Console.Write("New Item Name: ");
-                    prodNm[i] = Console.ReadLine();
-
-                    Console.Write("New Quantity: ");
-                    int quantity = int.Parse(Console.ReadLine());
-
-                    if (quantity <= 0)
-                    {
-                        Console.WriteLine("Quantity must be greater than 0.");
-                        return;
-                    }
-
-                    Console.WriteLine("Order updated successfully.");
-                    return;
-                }
+                Console.WriteLine("Invalid ID.");
+                return;
             }
 
-            Console.WriteLine("Order not found.");
+            Console.Write("New Item Name: ");
+            string productName = Console.ReadLine();//add
+
+            Console.Write("New Quantity: ");
+            if (!int.TryParse(Console.ReadLine(), out int quantity) || quantity <= 0)
+            {
+                Console.WriteLine("Quantity must be greater than 0");
+                return;
+            }
+            manager.UpdateOrder(orderId, productName, quantity);
+            Console.WriteLine("Order updated successfully.");
         }
         static void DeleteOrder()
         {
             Console.Write("\nEnter Order ID to delete: ");
-            int id = int.Parse(Console.ReadLine());
-
-            for (int i = 0; i < orderId.Count; i++)
+            if (!int.TryParse(Console.ReadLine(), out int orderId))
             {
-                if (orderId[i] == id)
-                {
-                    orderId.RemoveAt(i);
-                    cusNm.RemoveAt(i);
-                    prodNm.RemoveAt(i);
-                    qnty.RemoveAt(i);
-                    ordrStt.RemoveAt(i);
-
-                    Console.WriteLine("Order deleted successfully.");
-                    return;
-                }
+                Console.WriteLine("Invalid ID.");
+                return;
             }
 
-            Console.WriteLine("Order not found.");
+            manager.DeleteOrder(orderId);
+            Console.WriteLine("Order deleted successfully.");
+            return;
         }
         static void UpdateOrderStatus()
         {
             Console.Write("\nEnter Order ID: ");
-            int id = int.Parse(Console.ReadLine());
-
-            for (int i = 0; i < orderId.Count; i++)
+            if (!int.TryParse(Console.ReadLine(), out int orderId))
             {
-                if (orderId[i] == id)
-                {
-                    Console.WriteLine("Select Status:");
-                    Console.WriteLine("1 Pending");
-                    Console.WriteLine("2 Processing");
-                    Console.WriteLine("3 Completed");
-                    Console.WriteLine("4 Cancelled");
-                    Console.Write("Choice: ");
+                Console.WriteLine("Invalid ID.");
+                return;
+            }
+            Console.WriteLine("\nSelect Status:");
+            Console.WriteLine("1 Pending");
+            Console.WriteLine("2 Processing");
+            Console.WriteLine("3 Completed");
+            Console.WriteLine("4 Cancelled");
+            Console.Write("Choice: ");
 
-                    string statusChoice = Console.ReadLine();
+            string choice = Console.ReadLine();
 
-                    if (statusChoice == "1") ordrStt[i] = "Pending";
-                    else if (statusChoice == "2") ordrStt[i] = "Processing";
-                    else if (statusChoice == "3") ordrStt[i] = "Completed";
-                    else if (statusChoice == "4") ordrStt[i] = "Cancelled";
-                    else
-                    {
-                        Console.WriteLine("Invalid status.");
-                        return;
-                    }
+            string status;
 
-                    Console.WriteLine("Order status updated.");
-                    return;
-                }
+            switch (choice)
+            {
+                case "1":
+                    status = "Pending";
+                    break;
+                case "2":
+                    status = "Processing";
+                    break;
+                case "3":
+                    status = "Completed";
+                    break;
+                case "4":
+                    status = "Cancelled";
+                    break;
+                default:
+                    status = null;
+                    break;
             }
 
-            Console.WriteLine("Order not found.");
+            if (status == null)
+            {
+                Console.WriteLine("Invalid Choice.");
+                return;
+            }
+            manager.UpdateOrderStatus(orderId, status);
+            Console.WriteLine("Status Updated.");
         }
-
     }
 }
