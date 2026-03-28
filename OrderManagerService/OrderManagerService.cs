@@ -1,4 +1,5 @@
-﻿using OrderData;
+﻿using OrderDataService;
+using OrderData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace OrderManagerServices
 {
-    internal class OrderManagerService
+    public class OrderManagerService
     {
-            public OrderDataService dataService = new OrderDataService();
+            public OrderDataServices dataService = new OrderDataServices(new OrderDataJSON());
 
             public List<Order> GetOrders()
             {
