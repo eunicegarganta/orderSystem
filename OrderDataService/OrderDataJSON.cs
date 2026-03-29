@@ -52,7 +52,7 @@ namespace OrderDataService
 
         private void SaveDataToJsonFile()
         {
-            using (var outputStream = File.OpenWrite(_jsonFileName))
+            using (var outputStream = File.Create(_jsonFileName)) //File.OpenWrite
             {
                 JsonSerializer.Serialize<List<Order>>(
                     new Utf8JsonWriter(outputStream, new JsonWriterOptions
@@ -63,7 +63,7 @@ namespace OrderDataService
 
         private void RetrieveDataFromJsonFile()
         {
-            using (var jsonFileReader = File.OpenText(this._jsonFileName))
+            using (var jsonFileReader = File.OpenText(this._jsonFileName)) //File.OpenText
             {
                 this.dummyOrders = JsonSerializer.Deserialize<List<Order>>
                     (jsonFileReader.ReadToEnd(), new JsonSerializerOptions
@@ -112,7 +112,7 @@ namespace OrderDataService
             {
                 dummyOrders.Remove(order);
                 this.SaveDataToJsonFile();
-            }
-        }
+            } 
+}
     }
 }

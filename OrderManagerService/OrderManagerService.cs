@@ -10,8 +10,15 @@ namespace OrderManagerServices
 {
     public class OrderManagerService
     {
-            public OrderDataServices dataService = new OrderDataServices(new OrderDataJSON());
+        public OrderDataServices dataService = new OrderDataServices(new OrderDBData());
+        //public OrderDataServices dataService = new OrderDataServices(new OrderDataJSON());//del
 
+        //doesn't need
+        //public OrderManagerService()
+        //{
+        //    OrderDBData orderDBData = new OrderDBData();//add
+        //}
+            
             public List<Order> GetOrders()
             {
                 return dataService.GetOrders();
