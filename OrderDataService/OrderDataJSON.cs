@@ -63,7 +63,7 @@ namespace OrderDataService
 
         private void RetrieveDataFromJsonFile()
         {
-            using (var jsonFileReader = File.OpenText(this._jsonFileName)) //File.OpenText
+            using (var jsonFileReader = File.OpenText(this._jsonFileName))
             {
                 this.dummyOrders = JsonSerializer.Deserialize<List<Order>>
                     (jsonFileReader.ReadToEnd(), new JsonSerializerOptions

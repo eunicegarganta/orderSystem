@@ -18,7 +18,6 @@ namespace OrderDataService
         public OrderDBData()
         {
             sqlConnection = new SqlConnection(connectionString);
-            ///////////////////
             AddSeeds();
         }
 
@@ -31,20 +30,16 @@ namespace OrderDataService
                 Add(new Order { CustomerName = "Maria Santos", ProductName = "Rice", Quantity = 5, Status = "Pending" });
                 Add(new Order { CustomerName = "Juan Dela Cruz", ProductName = "Canned Tuna", Quantity = 10, Status = "Processing" });
                 Add(new Order { CustomerName = "Ana Reyes", ProductName = "Cooking Oil", Quantity = 2, Status = "Completed" });
-                //Add(new Order { OrderId = 1, CustomerName = "Maria Santos", ProductName = "Rice", Quantity = 5, Status = "Pending" });
-                //Add(new Order { OrderId = 2, CustomerName = "Juan Dela Cruz", ProductName = "Canned Tuna", Quantity = 10, Status = "Processing" });
-                //Add(new Order { OrderId = 3, CustomerName = "Ana Reyes", ProductName = "Cooking Oil", Quantity = 2, Status = "Completed" });
             }
         }
 
         public void Add(Order order)
         {
-            //remove@OrderId
+            //@OrderId not included
             var insertStatement = "INSERT INTO Orders VALUES (@CustomerName, @ProductName, @Quantity, @Status)";
 
             SqlCommand InsertCmd = new SqlCommand(insertStatement, sqlConnection);
 
-            //InsertCmd.Parameters.AddWithValue("@OrderId", order.OrderId);
             InsertCmd.Parameters.AddWithValue("@CustomerName", order.CustomerName);
             InsertCmd.Parameters.AddWithValue("@ProductName", order.ProductName);
             InsertCmd.Parameters.AddWithValue("@Quantity", order.Quantity);
