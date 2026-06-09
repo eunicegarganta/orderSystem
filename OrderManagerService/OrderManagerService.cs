@@ -17,7 +17,13 @@ namespace OrderManagerServices
                 return dataService.GetOrders();
             }
 
-            public void CreateOrder(string customerName, string productName, int quantity)
+        public Order? GetOrder(int id)
+        {
+            return dataService.GetById(id);
+        }
+
+
+        public void CreateOrder(string customerName, string productName, int quantity)
             {
                 var orders = dataService.GetOrders();
 
